@@ -24,15 +24,29 @@
       margin-top: 2rem;
       font-size: 1.1rem;
     }
-    p {
-      font-size: 1.2rem;
+    p, ul {
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    ul {
+      margin-top: 0;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
   <h1>Post a Job</h1>
   <p>Click the button below to open GitHub's job post page.</p>
-  <p>Write your job title, and include your Discord username in the description.</p>
+  <p>Write your job title as the issue title.</p>
+  <p>In the description, please include:</p>
+  <ul>
+    <li>Discord username (example: rarumoke.jp)</li>
+    <li>Server invite link (example: https://discord.gg/xxxxxx)</li>
+    <li>Detailed job description</li>
+  </ul>
 
   <a href="https://github.com/gensou-cafe/sap/issues/new?labels=求人募集" target="_blank" rel="noopener" class="button">Post a Job (GitHub)</a>
 </body>
