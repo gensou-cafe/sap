@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>SAP Job Listings</title>
+  <style>
+    body {
+      background-color: #0a1e3f;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 2rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    a.button {
+      background-color: #1c52a1;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-bottom: 1rem;
+      display: inline-block;
+      margin-right: 1rem;
+    }
+    .job-card {
+      background-color: #122d6a;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px #041638;
+    }
+    .job-card p {
+      margin: 0.3rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>SAP Job Listings</h1>
+  <a href="index.html" class="button">Back to Info</a>
+  <a href="post.html" class="button">Post a Job</a>
+
+  <main id="job-list">
+    <p>Loading jobs...</p>
+  </main>
+
+  <script>
+    const owner = 'gensou-cafe';
+    const repo = 'sap';
+
+    async function fetchJobs() {
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?labels=求人募集&state=open`);
+      if (!res.ok) {
+        document.getElementById('job-list').textContent = 'Failed to load job listings';
+        return;
+      }
+      const issues = await res.json();
+      const container = document.getElementById('job-list');
+      container.innerHTML = '';
+
+      if(issues.length === 0){
+        container.textContent = 'No job listings currently available.';
+        return;
+      }
+
+      issues.forEach(issue => {
+        const div = document.createElement('div');
+        div.className = 'job-card';
+
+        const discordNameMatch = issue.body.match(/Discordユーザー名:\s*(.+)/);
+        const discordName = discordNameMatch ? discordNameMatch[1] : 'Not specified';
+
+        const serverLinkMatch = issue.body.match(/https?:\/\/discord\.gg\/[^\s]+/);
+        const serverLink = serverLinkMatch ? serverLinkMatch[0] : null;
+
+        const thumbsUpCount = issue.reactions && issue.reactions['+1'] ? issue.reactions['+1'] : 0;
+
+        div.innerHTML = `
+          <h2><a href="${issue.html_url}" target="_blank" style="color:#aad4ff;">${issue.title}</a></h2>
+          <p>${issue.body.split('\n').slice(0, 5).join('<br>')}</p>
+          <p><strong>Discord Username:</strong> ${discordName}</p>
+          <p><strong>Server Invite:</strong> ${serverLink ? `<a href="${serverLink}" target="_blank" style="color:#88caff;">${serverLink}</a>` : 'Not provided'}</p>
+          <p>👍 ${thumbsUpCount}  |  💬 ${issue.comments}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    fetchJobs();
+  </script>
+</body>
+</html>
